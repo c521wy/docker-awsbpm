@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  awsbpm:
+    build: .
+    image: awsbpm:6.2.GA-all-in-one
+    volumes:
+      - database-data:/var/lib/mysql
+      - awsbpm-apps:/AWSBPM/apps
+      - awsbpm-doccenter:/AWSBPM/doccenter
+    ports:
+      - 3306:3306/tcp
+      - 8088:8088/tcp
+      - 8000:8000/tcp
+volumes:
+  database-data:
+  awsbpm-apps:
+  awsbpm-doccenter:
