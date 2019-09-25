@@ -39,7 +39,7 @@ EXPOSE 3306/tcp
 COPY awsbpm/app-startup.sh awsbpm/web-startup.sh /usr/local/bin/
 COPY awsbpm/aws_startup.sh awsbpm/httpd-startup.sh /AWSBPM/bin/
 COPY awsbpm/aws-portal.xml awsbpm/server.xml /AWSBPM/bin/conf/
-ENV AWSBPM=/AWSBPM JAVA_HOME=/AWSBPM/jdk1.8
+ENV AWSBPM=/AWSBPM JAVA_HOME=/AWSBPM/jdk1.8 LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 VOLUME /AWSBPM/apps /AWSBPM/doccenter
 EXPOSE 8088/tcp 8000/tcp
 
