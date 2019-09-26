@@ -19,6 +19,7 @@ yum install -y mysql-community-server mysql-community-client && \
 yum clean all && \
 rm -rf /var/cache/yum
 # install awsbpm
+## 安装glibc-common防止中文乱码
 RUN \
 yum install -y wget glibc-common && yum clean all && rm -rf /var/cache/yum && \
 wget -q https://pub.caiweiqiang.cn/AWSBPM/AWS_PaaS_Release_6.2.GA_Linux_64bit.tar.gz && \
@@ -33,15 +34,19 @@ COPY supervisor/supervisord.ini /etc/supervisord.ini
 # mysql configuration
 COPY mysql/mysql-startup.sh /usr/local/bin/
 COPY mysql/my.cnf /etc/my.cnf
+ENV DB_AUTO_START=true
 VOLUME /var/lib/mysql
 EXPOSE 3306/tcp
 # awsbpm configuration
 COPY awsbpm/app-startup.sh awsbpm/web-startup.sh /usr/local/bin/
 COPY awsbpm/aws_startup.sh awsbpm/httpd-startup.sh /AWSBPM/bin/
 COPY awsbpm/aws-portal.xml awsbpm/server.xml /AWSBPM/bin/conf/
-ENV AWSBPM=/AWSBPM JAVA_HOME=/AWSBPM/jdk1.8 LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+ENV AWSBPM=/AWSBPM JAVA_HOME=/AWSBPM/jdk1.8
+ENV APP_AUTO_START=true WEB_AUTO_START=true
+## 防止中文乱码
+ENV LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 VOLUME /AWSBPM/apps /AWSBPM/doccenter
 EXPOSE 8088/tcp 8000/tcp
 
 
-CMD /usr/bin/supervisord -c /etc/supervisord.ini
+CMD /usr/local/bin/supervisord-startup.sh
