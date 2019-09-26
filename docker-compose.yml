@@ -4,14 +4,12 @@ services:
     build: .
     image: awsbpm:6.2.GA-all-in-one
     volumes:
-      - database-data:/var/lib/mysql
-      - awsbpm-apps:/AWSBPM/apps
-      - awsbpm-doccenter:/AWSBPM/doccenter
+      - awsbpm-db_data:/var/lib/mysql
+      - awsbpm-app_doccenter:/AWSBPM/doccenter
     ports:
       - 3306:3306/tcp
       - 8088:8088/tcp
       - 8000:8000/tcp
 volumes:
-  database-data:
-  awsbpm-apps:
-  awsbpm-doccenter:
+  awsbpm-db_data:
+  awsbpm-app_doccenter:

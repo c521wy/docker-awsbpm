@@ -30,10 +30,11 @@ tar -C AWSBPM -czf AWSBPM/apps.tar.gz apps && rm -rf AWSBPM/apps && mkdir -p AWS
 tar -C AWSBPM -czf AWSBPM/doccenter.tar.gz doccenter && rm -rf AWSBPM/doccenter && mkdir -p AWSBPM/doccenter
 
 # supervisor configuration
-COPY supervisor/supervisord.ini /etc/supervisord.ini
+COPY supervisor/supervisord.conf /etc/
+COPY supervisor/supervisord-startup.sh /usr/local/bin/
 # mysql configuration
 COPY mysql/mysql-startup.sh /usr/local/bin/
-COPY mysql/my.cnf /etc/my.cnf
+COPY mysql/my.cnf /etc/
 ENV DB_AUTO_START=true
 VOLUME /var/lib/mysql
 EXPOSE 3306/tcp
@@ -45,7 +46,7 @@ ENV AWSBPM=/AWSBPM JAVA_HOME=/AWSBPM/jdk1.8
 ENV APP_AUTO_START=true WEB_AUTO_START=true
 ## 防止中文乱码
 ENV LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-VOLUME /AWSBPM/apps /AWSBPM/doccenter
+VOLUME /AWSBPM/doccenter
 EXPOSE 8088/tcp 8000/tcp
 
 

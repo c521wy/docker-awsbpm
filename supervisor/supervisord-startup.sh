@@ -7,4 +7,4 @@
     [[ "$WEB_AUTO_START" = "true" ]] && supervisorctl start web;
 )&
 
-exec /usr/bin/supervisord -c /etc/supervisord.ini
+exec /usr/bin/supervisord -c /etc/supervisord.conf
