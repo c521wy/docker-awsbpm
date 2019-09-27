@@ -59,4 +59,5 @@ docker run -it --name awspaas-dev \
 | volume | 说明 |
 | -- | -- |
 | `/var/lib/mysql` | MySQL数据文件 |
+| `/AWSBPM/apps` | 平台应用安装目录 |
 | `/AWSBPM/doccenter` | 平台附件存储目录 |
