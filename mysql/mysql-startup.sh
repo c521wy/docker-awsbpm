@@ -1,15 +1,10 @@
 #! /usr/bin/env bash
 
-# mysqld init
-if [[ ! -d /var/lib/mysql/mysql ]]; then
-    echo "initializing mysqld"
-    if /usr/sbin/mysqld --initialize-insecure --user=mysql --console; then
-        echo "initialize mysqld done"
-    else
-        echo "initialize mysqld failed"
-        exit 1
-    fi
-fi
+set -uxe
 
-# mysqld startup
+# init mysqld
+[[ ! -d /var/lib/mysql/mysql ]] && \
+    /usr/sbin/mysqld --initialize-insecure --user=mysql --console
+
+
 exec /usr/sbin/mysqld --console
