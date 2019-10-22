@@ -11,7 +11,34 @@ services:
       - 3306:3306/tcp
       - 8088:8088/tcp
       - 8000:8000/tcp
+  awsbpm-with-external-db:
+    build: .
+    image: c521wy/awsbpm:6.2.GA-all-in-one
+    volumes:
+      - awsbpm-with-external-db-app_apps:/AWSBPM/apps
+      - awsbpm-with-external-db-app_doccenter:/AWSBPM/doccenter
+      - ./test/server.xml:/AWSBPM/bin/conf/server.xml
+    ports:
+      - 8088:8088/tcp
+      - 8000:8000/tcp
+    environment:
+      USE_EXTERNAL_DATABASE: 'true'
+  external-db:
+    image: mysql:5.7
+    volumes:
+      - awsbpm-with-external-db-db_data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - 3306:3306/tcp
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'AWSBPM'
+      MYSQL_USER: 'AWSBPM'
+      MYSQL_PASSWORD: 'AWSBPM'
 volumes:
   awsbpm-db_data:
   awsbpm-app_apps:
   awsbpm-app_doccenter:
+  awsbpm-with-external-db-db_data:
+  awsbpm-with-external-db-app_apps:
+  awsbpm-with-external-db-app_doccenter:
