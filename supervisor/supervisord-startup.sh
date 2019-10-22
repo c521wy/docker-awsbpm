@@ -5,6 +5,6 @@
     [[ "$DB_AUTO_START" = "true" ]] && supervisorctl start db;
     [[ "$APP_AUTO_START" = "true" ]] && supervisorctl start app;
     [[ "$WEB_AUTO_START" = "true" ]] && supervisorctl start web;
-)&
+) &
 
 exec /usr/bin/supervisord -c /etc/supervisord.conf

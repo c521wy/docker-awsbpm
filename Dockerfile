@@ -35,7 +35,7 @@ COPY supervisor/supervisord-startup.sh /usr/local/bin/
 # mysql configuration
 COPY mysql/mysql-startup.sh /usr/local/bin/
 COPY mysql/my.cnf /etc/
-ENV DB_AUTO_START=true
+ENV DB_AUTO_START=true USE_EXTERNAL_DATABASE=false
 VOLUME /var/lib/mysql
 EXPOSE 3306/tcp
 # awsbpm configuration

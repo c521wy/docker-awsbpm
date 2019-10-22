@@ -10,6 +10,7 @@
 docker run -d --name awspaas \
     -v awspaas_database:/var/lib/mysql \
     -v awspaas_doccenter:/AWSBPM/doccenter \
+    -v awspaas_apps:/AWSBPM/apps \
     c521wy/awsbpm:6.2.GA-all-in-one
 ```
 
@@ -21,6 +22,7 @@ docker run -it --name awspaas-dev \
     -v awspaas-dev_doccenter:/AWSBPM/doccenter \
     -v /path/to/server.xml:/AWSBPM/bin/conf/server.xml \
     -v /path/to/apps:/AWSBPM/apps \
+    -e USE_EXTERNAL_DATABASE=true \
     c521wy/awsbpm:6.2.GA-all-in-one
 ```
 
@@ -51,6 +53,7 @@ docker run -it --name awspaas-dev \
 | 变量 | 说明 |
 | -- | -- |
 | DB_AUTO_START | 是否自动启动db服务，默认值为`true`，设置为其他值可阻止服务自启动 |
+| USE_EXTERNAL_DATABASE | 是否使用外部数据源，默认值为`false`。使用外部数据源需挂载使用自定义`server.xml`文件。当使用外部数据源时同时也会阻止db服务自动启动 |
 | APP_AUTO_START | 是否自动启动app服务，默认值为`true`，设置为其他值可阻止服务自启动 |
 | WEB_AUTO_START | 是否自动启动web服务，默认值为`true`，设置为其他值可阻止服务自启动 |
 
