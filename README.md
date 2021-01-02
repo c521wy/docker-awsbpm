@@ -11,7 +11,7 @@ docker run -d --name awspaas \
     -v awspaas_database:/var/lib/mysql \
     -v awspaas_doccenter:/AWSBPM/doccenter \
     -v awspaas_apps:/AWSBPM/apps \
-    registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.2.GA-all-in-one
+    registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.3.GA-all-in-one
 ```
 
 快速部署一个本地开发环境实例
@@ -23,10 +23,10 @@ docker run -it --name awspaas-dev \
     -v /path/to/server.xml:/AWSBPM/bin/conf/server.xml \
     -v /path/to/apps:/AWSBPM/apps \
     -e USE_EXTERNAL_DATABASE=true \
-    registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.2.GA-all-in-one
+    registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.3.GA-all-in-one
 ```
 
-[docker-compose.yml](https://raw.githubusercontent.com/c521wy/docker-awsbpm/6.2.GA-all-in-one/docker-compose.yml)
+[docker-compose.yml](https://raw.githubusercontent.com/c521wy/docker-awsbpm/6.3.GA-all-in-one/docker-compose.yml)
 
 ## 服务控制
 

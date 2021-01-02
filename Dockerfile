@@ -22,10 +22,10 @@ rm -rf /var/cache/yum
 ## 安装glibc-common防止中文乱码
 RUN \
 yum install -y wget glibc-common && yum clean all && rm -rf /var/cache/yum && \
-wget -q https://pub.caiweiqiang.cn/AWSBPM/AWS_PaaS_Release_6.2.GA_Linux_64bit.tar.gz && \
-tar -xf AWS_PaaS_Release_6.2.GA_Linux_64bit.tar.gz && \
-rm -rf AWS_PaaS_Release_6.2.GA_Linux_64bit.tar.gz && \
-mv AWS_PaaS_Release_6.2.GA_Linux_64bit AWSBPM && \
+wget -q https://pub.caiweiqiang.cn/AWSBPM/AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
+tar -xf AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
+rm -rf AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
+mv AWS_PaaS_Release_6.3.GA_Linux_64bit AWSBPM && \
 tar -C AWSBPM -czf AWSBPM/apps.tar.gz apps && rm -rf AWSBPM/apps && mkdir -p AWSBPM/apps && \
 tar -C AWSBPM -czf AWSBPM/doccenter.tar.gz doccenter && rm -rf AWSBPM/doccenter && mkdir -p AWSBPM/doccenter
 
