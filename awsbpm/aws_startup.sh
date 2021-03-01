@@ -23,9 +23,6 @@ JAVA_DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 # TEMP License
 rm -rf ~/.fe285ab55cf5e
 
-# rewrite version
-sed -i 's/version="6.2.GA"/version="6.3.1"/' conf/server.xml
-
 #JVM Version Options
 # ---------------------
 # 1.7 JAVA_OPTS="-server -Xmx2g -Xms2g -XX:PermSize=256m -XX:MaxPermSize=256m -XX:SurvivorRatio=16 -XX:+UseParNewGC  -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:MaxTenuringThreshold=15 -XX:+ExplicitGCInvokesConcurrent -XX:+DoEscapeAnalysis -XX:+CMSClassUnloadingEnabled -XX:+UseCMSCompactAtFullCollection $JAVA_OPTS "
