@@ -22,13 +22,16 @@ rm -rf /var/cache/yum
 ## 安装glibc-common防止中文乱码
 RUN \
 yum install -y wget glibc-common && yum clean all && rm -rf /var/cache/yum && \
-wget -q https://pub.caiweiqiang.cn/AWSBPM/AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
-tar -xf AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
-rm -rf AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz && \
-mv AWS_PaaS_Release_6.3.GA_Linux_64bit AWSBPM && \
+wget -q https://pub.caiweiqiang.cn/AWSBPM/aws6.2.1.0925.tar.gz && \
+tar -xf aws6.2.1.0925.tar.gz && \
+rm -rf aws6.2.1.0925.tar.gz && \
+mv aws6.2.1.0925 AWSBPM && \
 tar -C AWSBPM -czf AWSBPM/apps.tar.gz apps && rm -rf AWSBPM/apps && mkdir -p AWSBPM/apps && \
 tar -C AWSBPM -czf AWSBPM/doccenter.tar.gz doccenter && rm -rf AWSBPM/doccenter && mkdir -p AWSBPM/doccenter
-
+# 修复catalina.sh执行权限
+RUN \
+chmod +x /AWSBPM/webserver/bin/catalina.sh && \
+chmod +x /AWSBPM/jdk1.8/bin/*
 # supervisor configuration
 COPY supervisor/supervisord.conf /etc/
 COPY supervisor/supervisord-startup.sh /usr/local/bin/

@@ -2,7 +2,7 @@ version: '3.7'
 services:
   awsbpm:
     build: .
-    image: registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.3.GA-all-in-one
+    image: registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.2.1.0925-all-in-one
     volumes:
       - awsbpm-db_data:/var/lib/mysql
       - awsbpm-app_apps:/AWSBPM/apps
@@ -13,7 +13,7 @@ services:
       - 8000:8000/tcp
   awsbpm-with-external-db:
     build: .
-    image: registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.3.GA-all-in-one
+    image: registry.cn-beijing.aliyuncs.com/c521wy/awsbpm:6.2.1.0925-all-in-one
     volumes:
       - awsbpm-with-external-db-app_apps:/AWSBPM/apps
       - awsbpm-with-external-db-app_doccenter:/AWSBPM/doccenter
