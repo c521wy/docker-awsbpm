@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	[/bin/conf/aws-portal.xml]$Copyright(C)Actionsoft.,Ltd(2014)
+	
+	AWS BPM Portal配置文件，这些配置项是被AWS系统内部使用的，应用开发者不能破坏或
+	扩展新的Element/Attribute。虽然properties提供了一个相对开放的配置机制，如果要
+	自定义的参数与App应用有关，应定义到App的manifest.xml或创建新的配置。
+
+	该文件被ResourceScanner扫描器检查更新，注释中参数名标注(*)项，需重启服务生效
+-->
+<!-- location 部署Web服务的根目录 default=[../webserver/webapps/portal/]
+	
+	url					浏览器访问Portal App的url根地址。如集群Web，建议此处提供 域名地址default=[http://localhost:8088/portal]
+
+	mobileUrl			移动App与AWS通信时，请求Portal App的url根地址。如果未设置 该项，默认取url设置的地址。default=[]
+-->
+<portal location="../webserver/webapps/portal/" url="http://localhost:8088/portal" mobileUrl="">
+    <!-- 安全配置 loginAdapter 当前平台LoginAdapter登录适配器实现类 default=[com.actionsoft.bpms.commons.login.DefaultLoginAdapter] failLockedTimes 连续N次登录失败被锁定的次数设置 default=[5] unlockTime 锁定后自动解锁时间 default=[600000]毫秒 pwdDefault 创建账户时的默认密码 default=[1] minPwdLength 允许账户口令最小长度，0表示无限制 default=[0] maxPwdLength 允许账户口令最大长度，最多32位长度 default=[32] pwdCycle 账户口令修改周期(单位天)。默认为0表示不控制 default=[0]
+
+		pwdComplexity		是否要求强度口令（必须包含字母大小写和数字）
+							口令复杂度自定义参数设置 关联参数：pwdComplexityRegular，pwdComplexityRegularWarning default=[false] pwdChange 是否允许修改口令，用于AWS身份已通过SSO进入，在个人配置中屏蔽自助修改功能 default=[true] code Web与AWS通信掩码 default=[AH{%C1%F5%BD%F0%D6%F9}]
+								
+		requiredUserInfo	需要用户必须完善的信息
+							默认可以为空，支持email、officeTel、mobile三个选项，多个可用|隔开。
+	-->
+    <security loginAdapter="com.actionsoft.bpms.commons.login.DefaultLoginAdapter" failLockedTimes="5" unlockTime="600000" pwdDefault="1" minPwdLength="0" maxPwdLength="32" pwdCycle="0" pwdComplexity="false" pwdChange="false" code="AH{%C1%F5%BD%F0%D6%F9}" requiredUserInfo=""/>
+    <!--
+		SSO配置
+	
+		provider			SSO登陆类型,如:NTLM,CAS,为空不启用
+		
+		keystore			证书位置,NTLM SSO修改AD密码使用的SSL安全配置
+							
+		keyPwd				密钥库密码
+		
+		jndiCC				cc jdni配置的UUID
+	-->
+    <sso provider="" keystore="" keyPwd="" jndiCC=""/>
+    <!--
+		界面语言
+	
+		name				语言名称关键字，与i18n文件的item语言项对应
+		
+		title				语言标题
+							
+		default				是否默认，只允许其中一个lang为true
+	-->
+    <language>
+        <lang name="cn" title="简体中文" default="true"/>
+        <lang name="en" title="English"/>
+        <lang name="big5" title="繁體中文"/>
+    </language>
+    <!--
+		移动门户配置
+	
+		enabled			                  是否启用移动门户访问,true为启用， false为禁用
+
+        mdmEnabled               是否启用移动设备管理
+        
+        userUnregister           是否允许用户注销
+		
+		multiDevice              是否允许用户使用多个移动设备
+		
+		iOSMDMPermPwd            iOS MDM推送证书密码，由系统自动生成，无需手动配置
+		
+		appleId                  管理iOS MDM推送证书的Apple id，由系统自动保存，无需手动配置
+		
+		apnsCreate               是否是通过Actionsoft的MDM Vendor证书生成的推送证书，由系统自动生成，无需手动配置
+	-->
+    <mobilePortal enabled="true" mdmEnabled="true" userUnregister="true" multiDevice="true" iOSMDMPermPwd="" appleId="" apnsCreate="true"/>
+    <!--
+		其他未分类的平台扩展参数，注意name不区分大小写
+		org.tree.draggable  组织结构树是否支持拖动		
+		people-list-priority low:显示顺序为 部门，人 high:显示顺序为 人，部门
+		client.default.lookandfeel  默认皮肤
+		select.role.complete.task 办理时有兼任身份是否进行身份选择，true需要，false不需要，默认值false
+		login.ldap.cc    ldap id ，校验Ldap用户名 密码的登录适配器时，必填   和 同步修改AD域密码时
+		login.ldap.user.filter 校验Ldap用户名适配器时，指定用户的匹配规则，除AD外必须填，???为占位符，例如AD的默认为：(sAMAccountName=???)
+		pwdComplexityRegular 用户自定义口令复杂度 正则表达式，pwdComplexity参数为true，修改密码时，读取该参数进行口令强度校验。参数为空或未设置该参数 默认表达式为 ^(?=.*[0-9].*)(?=.*[A-Z].*)(?=.*[a-z].*).+$
+		pwdComplexityRegularWarning 用户自定义口令强度校验错误提示 根据pwdComplexityRegular参数规则填写对应提示，校验不通过时，前台弹出该提示语句。pwdComplexityRegular参数存在时 必填。默认参数值：密码中必须包含大写字母、小写字母和数字
+		
+	-->
+    <properties>
+        <property name="org.tree.draggable">true</property>
+        <property name="people-list-priority">low</property>
+        <property name="client.default.lookandfeel">com.actionsoft.apps.skins.metro</property>
+        <property name="select.role.complete.task">false</property>
+        <!--
+		<property name="pwdComplexityRegular">^(?=.*[0-9].*)(?=.*[A-Z].*)(?=.*[a-z].*).+$</property>
+        <property name="pwdComplexityRegularWarning">密码中必须包含大写字母、小写字母和数字</property>
+		<property name="login.ldap.cc"/> 
+		<property name="login.ldap.user.filter"/> 
+		-->
+    </properties>
+</portal>

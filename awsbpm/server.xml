@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	[/bin/conf/server.xml]$Copyright(C)Actionsoft.,Ltd(2014)
+	
+	AWS BPM服务主配置文件，这些配置项是被AWS系统内部使用的，应用开发者不能破坏或
+	扩展新的Element/Attribute。虽然properties提供了一个相对开放的配置机制，如果要
+	自定义的参数与App应用有关，应定义到App的manifest.xml或创建新的配置。
+	
+	该文件被ResourceScanner扫描器检查更新，注释中参数名标注(*)项，需重启服务生效。
+-->
+<!-- instanceName AWS服务实例名称(Id)。在一组AWS集群的环境中，instanceName被用 于识别各个AWS服务节点。建议不包括怪字符和中文名称，尽量避免重 复修改，长度在90个字符串以内。如果启动脚本指定，该配置项无效。 default=[aws-node#1]
+	
+	paasCloud			该实例是否运行在PaaS云，由PaaSCloud出厂该参数
+
+	paasCloudAPIId		该实例在PaaS云中的API授权Id，由PaaSCloud提供该参数
+-->
+<server instanceName="aws-node#1" version="6.3.GA" paasCloud="false" paasCloudAPIId="">
+    <!-- AWS实例集群配置。 service 是否开启集群服务。如果设置为true且许可证证支持集群，处于同个组播的AWS 服务节点将被自动发现，进入集群模式，支持组播和单播2种集群实现。 default=[false] multicast.enabled 集群是否使用组播模式，false时为单播。 default=[true] frequency 心跳检查间隔时间。 default=[500]ms dropTime 延迟时间。节点成员将超时时，如果未能在延迟时间内发送心跳通知，意味着该 节点成员可能发生故障。在高峰压力下，增大该值可能会防止误判。 default=[3000]ms
+
+		// 组播参数 group 集群组名。集群时应确保各Web节点和AWS节点的此项配置处于同一组内，同时 避免成产环境与测试环境或开发环境中，组名重复。建议生产环境重新命名 default=[aws server group]
+
+		multicastAddr		组播地址段，处于同一集群组的成员报告自己的位置并监控心跳。确保网络支持
+							multicast traffic(组播)。一组集群节点的配置应相同 default=[228.0.0.4] multicastPort 组播端口号。一组集群节点的配置应相同 default=[45564]
+
+		// 单播参数
+		unicast.hosts		集群节点列表，含web和server节点，格式为ip1:集群端口1,ip2:集群端口2...。
+							示例：192.168.0.8:4000,192.168.0.9:4000,192.168.0.10:4000。该值和aws-server.xml中配置一致，单播时该参数不允许空
+
+		unicast.port(*)		集群端口，单机多例可通过启动脚本-Dunicast.port VM参数指定值 default=[4000]
+	-->
+    <cluster service="false" group="aws cluster group"/>
+    <!--
+		mainServer连接器配置。mainServer是一个守护监听来自Web Server请求的同步ServerSocket，
+		通过对Web Server的cmd命令和参数解析，触发对应的控制器和对应的逻辑处理，并响应处理结果。
+
+		port(*)				AWS主服务的ServerSocket监听端口。在同一操作系统下，该端口不允许
+							被占用。该端口被修改后，对应Web Service配置应修改。 default=[10008]
+
+		maxClient			AWS并行处理Web Server瞬间请求的最大数，并发超过该值给用户输出警告信息， 每个Web请求被JVM分派一个独立线程，该参数是否生效，受AWS许可模式的影响。 default=[1200]
+
+		connectionTimeout	AWS处理Web Server请求超时时间，若超时仍未执行完，由监控守护线程kill 该线程，并输出至error.log日志。 default=[1200000]ms
+
+		shell(*)			AWS启动窗口是否响应Shell命令，执行'in aws'进入命令交互模式。如果AWS服务 被设置为后台进程执行（如在Linux设置了开机服务自动启动），应设置为false。 default=[true] sessionTimeout AWS用户会话超时时间，超时时间从用户最后一次请求开始计算，超时后由AWS自动 销毁该Session。 default=[7200000]ms(120m) sessionIdleTime AWS用户有效会话允许的空闲时间，在该范围内用户仍被视为在线状态。 default=[1200000]ms(20m)
+	-->
+    <connector name="mainServer" port="10008" maxClient="800" connectionTimeout="1200000" shell="false" sessionTimeout="7200000" sessionIdleTime="1200000"/>
+    <!--
+		fileServer连接器配置。fileServer是一个守护监听来自Web Server请求的同步ServerSocket，
+		专门负责处理来自Web Server文件上传、下载请求。
+
+		port(*)				AWS文件上传/下载服务的ServerSocket监听端口。在同一操作系统下，该端口不允许
+							被占用。该端口被修改后，对应Web Service配置应修改。 default=[10007] connectionTimeout AWS处理文件上传/下载超时时间，若超时仍未执行完，由监控线程kill该线程，并 输出至error.log日志。 default=[2400000]ms
+	-->
+    <connector name="fileServer" port="10007" connectionTimeout="2400000"/>
+    <!-- 系统调试开关，通常在生产环境中关闭这些开关。 sql 是否记录SQL的执行，开启后将SQL操作以INFO级别输出并记录Connection堆栈 default=[false] cmd 是否记录cmd请求，开启后将来自Web的请求以INFO级别输出 default=[false] templatePage 是否开启调试Web页面开发模版，开启后在每个页面提供堆栈调试按钮 default=[false] cache 是否开启集群下Cache广播调试信息，开启后将Cache同步消息以INFO级别输出 default=[false]
+	-->
+    <debug sql="false" cmd="false" templatePage="false" cache="false"/>
+    <!--
+		AWS BPM主数据库的JDBC配置和数据库连接池参数配置。注意对于高并发用户，应在extendConfig
+		链接的文件中对DBPool进行更多性能策略调整。
+
+		provider(*)			当前AWS BPM主数据库类型，不区分大小写
+
+		driver(*)			当前AWS BPM主数据库JDBC驱动名称
+
+		url(*)				当前AWS BPM主数据库JDBC URL配置
+
+		username(*)			当前AWS BPM主数据库账户名
+
+		password(*)			当前AWS BPM主数据库账户口令，明文口令要求使用bin/passwd.bat(sh)加密存储
+
+		initialSize(*)		给当前AWS BPM主数据库连接池初始化连接数 default=[50] maxActive 同时最大连接数据库的连接数 default=[300]
+
+		extendConfig		对AWS BPM主数据库相关的扩展配置文件路径 default=[conf/db_pool.properties]
+	-->
+    <!-- oracle-->
+    <!--
+	<database provider="ORACLE" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@localhost:1521:ORCL" username="AWS6" password="isaywzklSy40XdmfW1ZOeQ" initialSize="50" maxActive="200" extendConfig="conf/db_pool.properties" />
+	-->
+
+    <!-- sqlserver-->
+    <!--
+	<database provider="sqlserver" driver="net.sourceforge.jtds.jdbc.Driver" url="jdbc:jtds:sqlserver://localhost:1433/aws6;characterEncoding=UTF-8" username="sa" password="1dow3oxI2Gs_nOK2gz7gmQ" initialSize="20" maxActive="50" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- sqlserver 官方驱动-->
+    <!--
+	<database provider="sqlserver" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;databaseName=aws6;integratedSecurity=false;characterEncoding=UTF-8" username="sa" password="1dow3oxI2Gs_nOK2gz7gmQ" initialSize="20" maxActive="50" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- DB2-->
+    <!--
+	<database provider="DB2" driver="com.ibm.db2.jcc.DB2Driver" url="jdbc:db2://localhost:50000/AWS" username="db2admin" password="isaywzklSy40XdmfW1ZOeQ" initialSize="30" maxActive="100" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- 南方通用 GBase-->
+    <!--
+	<database provider="informix" driver="com.informix.jdbc.IfxDriver" url="jdbc:informix-sqli://localhost:9088/aws6:INFORMIXSERVER=gbaseserver;DB_LOCALE=zh_CN.utf8;CLIENT_LOCALE=zh_CN.utf8;NEWCODESET=UTF8,GB18030-2000,5488" username="informix" password="unA21tycsLzLLPiModAl7w" initialSize="10" maxActive="300" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- postgresql -->
+    <!--
+	<database provider="postgresql" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/AWS6" username="postgres" password="isaywzklSy40XdmfW1ZOeQ" initialSize="5" maxActive="100" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- 神通-->
+    <!--
+    <database provider="oscar" driver="com.oscar.Driver" url="jdbc:oscar://localhost:2003/AWS6" username="sysdba" password="UDOl574w_d7PYVp6fXdVIA" initialSize="10" maxActive="50" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- 达梦-->
+    <!--
+    <database provider="dm" driver="dm.jdbc.driver.DmDriver" url="jdbc:dm://localhos:5236/DAMENG" username="sysdba" password="vomYnW4GP-ZrxJtGYaw52w" initialSize="10" maxActive="50" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- 人大金仓-->
+    <!--
+	<database provider="kingbase" driver="com.kingbase8.Driver" url="jdbc:kingbase8://192.168.0.52:54321/TEST" username="SYSTEM" password="1dow3oxI2Gs_nOK2gz7gmQ" initialSize="20" maxActive="50" extendConfig="conf/db_pool.properties"/>
+	-->
+
+    <!-- Mysql-->
+    <database provider="mysql" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/awsbpm?characterEncoding=utf-8" username="AWSBPM" password="_AAiWXJGjS9mFKDXYS42bw" initialSize="10" maxActive="300" extendConfig="conf/db_pool.properties"/>
+
+    <!--
+		其他未分类的平台扩展参数，注意name不区分大小写
+	-->
+    <properties>
+        <!--
+			HTTP长连接请求过滤，多个用逗号隔开。用来配置给AWS，哪些CMD请求是长连接，
+			这样平台的性能分析工具将忽略或提供该类长连接请求的专门监控管理，而不会被强行杀死
+		-->
+        <property name="long.polling.cmd">com.actionsoft.apps.coe.pal_pl_repository_designer_realtion_listen,com.actionsoft.apps.coe.pal_pl_repository_designer_realtime_listen</property>
+        <!--
+			文件存储根路径，集群模式下多个AWS节点应共享该位置
+		-->
+        <property name="dc.path">../doccenter/</property>
+        <!--
+			如果未指定文件最大限制，默认的文件大小限制，单位：M
+		-->
+        <property name="filesize.max">50</property>
+        <!--
+			会话访问的时候都会重写会话的刷新时间，这样会保持有效时间内会话不超时
+			设置为true则会重写，false则不重写
+		-->
+        <property name="session.rewrite.refreshtime">true</property>
+        <!--
+			设置一些定时处理的CMD不重写会话的刷新时间
+			session.rewrite.refreshtime属性设置false之后，该属性失效
+		-->
+        <property name="session.rewrite.refreshtime.ignore.cmds">com.actionsoft.apps.notification_load_unread_msg,com.actionsoft.apps.coe.pal_pl_repository_designer_realtion_listen,com.actionsoft.apps.coe.pal_pl_repository_designer_realtime_listen,CONSOLE_M_PROCESS_DESIGNER_GET_CHECKOUT_INFO,CONSOLE_M_FORM_DESIGN_GET_CHECKOUT_INFO,CLIENT_BPM_FORM_EDITOR_PERMISSIONS</property>
+
+        <!--
+			系统需要时区处理，以下@公式不能正常显示，需要过滤使用
+			@year,@month,@monthBegin,@monthEnd,@quarter,@quarterBegin,@quarterEnd,@hour,@minute,@second
+			默认配置为空，如果系统需要时区处理，则需要配置
+		-->
+        <property name="timezone.not.support.formula"></property>
+    </properties>
+    <jobs threadCount="20"/>
+</server>

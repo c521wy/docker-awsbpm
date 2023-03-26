@@ -1,0 +1,22 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+clone:
+  depth: 1
+
+steps:
+  - name: docker buildx
+    image: git.hd.caiweiqiang.cn:5001/drone-plugins/docker-buildx
+    privileged: true
+    settings:
+      registry: git.hd.caiweiqiang.cn:5001
+      username: caiweiqiang
+      password:
+        from_secret: gitea.token
+      repo: git.hd.caiweiqiang.cn:5001/${DRONE_REPO}
+      platform: linux/amd64,linux/arm64
+
+node:
+  ID: my-pve-runner
