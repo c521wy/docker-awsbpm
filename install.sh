@@ -12,7 +12,7 @@ yum install -y supervisor
 # install mysql
 yum install -y yum-utils
 rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
-yum install -y https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm
+yum install -y https://dev.mysql.com/get/mysql80-community-release-el9-5.noarch.rpm
 yum install -y mysql-community-server mysql-community-client
 
 # install jdk
