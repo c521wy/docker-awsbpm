@@ -1,8 +1,7 @@
 FROM git.hd.caiweiqiang.cn:5001/docker-images/cache/rockylinux:9.1
 
-COPY install.sh /
-
-RUN /install.sh
+COPY install-base.sh /
+RUN /install-base.sh
 
 COPY supervisor/supervisord.conf /etc/
 COPY supervisor/supervisord-startup.sh /usr/local/bin/
@@ -12,6 +11,9 @@ COPY mysql/my.cnf /etc/
 ENV DB_AUTO_START=true USE_EXTERNAL_DATABASE=false
 VOLUME /var/lib/mysql
 EXPOSE 3306/tcp
+
+COPY install-awsbpm.sh /
+RUN /install-awsbpm.sh
 
 COPY awsbpm/app-startup.sh awsbpm/web-startup.sh /usr/local/bin/
 COPY awsbpm/aws_startup.sh awsbpm/httpd-startup.sh /AWSBPM/bin/
