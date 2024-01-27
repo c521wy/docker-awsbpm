@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eux
+
 # install awsbpm
 wget https://pub.hd.caiweiqiang.cn:5001/AWSBPM/AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz
 tar -xf AWS_PaaS_Release_6.3.GA_Linux_64bit.tar.gz
