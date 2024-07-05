@@ -23,4 +23,6 @@ if [[ "$USE_EXTERNAL_DATABASE" = "false" ]]; then
   fi
 fi
 
+chmod +x "$AWSBPM"/bin/*.sh
+
 exec "$AWSBPM"/bin/aws_startup.sh
