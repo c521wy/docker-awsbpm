@@ -25,3 +25,5 @@ VOLUME /AWSBPM/apps /AWSBPM/doccenter
 EXPOSE 8088/tcp 8000/tcp
 
 CMD /usr/local/bin/supervisord-startup.sh
+
+COPY libsigar-aarch64-linux.so ${AWSBPM}/bin/lib/sigar
